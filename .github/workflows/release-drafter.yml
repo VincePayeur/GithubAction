@@ -8,7 +8,7 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.MY_PAT }}
     steps:
       - name: Label pull request
         if: github.event_name == 'pull_request'
@@ -21,6 +21,7 @@ jobs:
         if: github.event_name == 'push'
         uses: release-drafter/release-drafter@v5
         with:
+
           publish: true
           disable-releaser: false
           disable-autolabeler: true
