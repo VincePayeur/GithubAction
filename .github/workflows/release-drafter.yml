@@ -1,12 +1,5 @@
 name: Release Drafter
-on:
-  workflow_call:
-    inputs:
-      labeler:
-        type: boolean
-        description: 'Only label PR'
-        required: true
-        default: true
+on: workflow_call
 
 jobs:
   Release_Drafter:
