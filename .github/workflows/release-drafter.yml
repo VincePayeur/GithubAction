@@ -10,12 +10,9 @@ on:
 
 jobs:
   Release_Drafter:
-    permissions:
-      contents: write
-      pull-requests: write
-    runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.MY_PAT }}
+    runs-on: ubuntu-latest
     steps:
       - name: Label pull request
         if: ${{ github.event.inputs.labeler }}
