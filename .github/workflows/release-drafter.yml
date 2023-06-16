@@ -15,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Label pull request
-        if: ${{ github.event.inputs.labeler }} == true
+        if: github.event_name == 'pull_request'
         uses: release-drafter/release-drafter@v5
         with:
           disable-releaser: true
           disable-autolabeler: false
 
       - name: Update release draft
-        if: ${{ github.event.inputs.labeler }} == false
+        if: github.event_name == 'push'
         uses: release-drafter/release-drafter@v5
         with:
           publish: true
