@@ -44,6 +44,7 @@ jobs:
       - name: Commit and push changes to galaxy.yml
         run: |
           git config --global user.name "Github action BOT"
+          git config --global user.email "BOT@users.noreply.github.com"
           git commit -am "Automated commit to update galaxy.yml"
           git push
 
