@@ -14,8 +14,8 @@ jobs:
           disable-releaser: true
           disable-autolabeler: true
 
-      - name: Get tag name
+      - name: Print tag name
         run: |
           echo "--- Start ---"
-          echo "$name"
+          echo "${{ steps.tag_name.outputs.name }}"
           echo "--- End ---"
