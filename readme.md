@@ -3,11 +3,11 @@
 Pour appeler ce workflow réutilisable, vous n'avez qu'à appeler le répertoire X@main?vY avec un workflow qui se déclanche lors de:
 
 	on:
-		push:
-			branches:
-			- main
-		pull_request:
-			types: [opened, reopened, synchronize]
+	 push:
+		branches:
+		- main
+	 pull_request:
+	  types: [opened, reopened, synchronize]
 
 ## Paramètres
 ### Inputs
