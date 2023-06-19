@@ -1,11 +1,5 @@
 name: Release Drafter
-on:
-  workflow_call:
-    inputs:
-      is_collection:
-        type: boolean
-        required: false
-        default: false
+on: workflow_call
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -20,20 +14,11 @@ jobs:
           disable-releaser: true
           disable-autolabeler: false
 
-  Release_Draft:
-    if: '!${{ github.event.inputs.is_collection }}'
+  Get_Draft_Name:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    steps:
-      - name: Create new release
-        uses: release-drafter/release-drafter@v5
-        with:
-          publish: true
-          disable-releaser: false
-          disable-autolabeler: true
-
-  Release_Draft_Collection:
-    if: ${{ github.event.inputs.is_collection }}
-    runs-on: ubuntu-latest
+    outputs:
+      release_name: ${{ steps.release_name.outputs.name }}
     steps:
       - name: Get new release tag name
         id: release_name
@@ -42,12 +27,18 @@ jobs:
           disable-releaser: false
           disable-autolabeler: true
 
+  Update_galaxy_file:
+    needs: Get_Draft_Name
+    runs-on: ubuntu-latest
+    env:
+      release_name: ${{ needs.Get_Draft_Name.outputs.release_name }}
+    steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Update galaxy.yml with the new release version
         run: |
-          version="${{ steps.release_name.outputs.name }}"
+          version="$release_name"
           sed -i 's/[1-9]\?[0-9]\.[1-9]\?[0-9]\.[1-9]\?[0-9]/'"${version:1}"'/' galaxy.yml
 
       - name: Commit and push changes to galaxy.yml
@@ -57,6 +48,10 @@ jobs:
           git commit -am "Automated commit to update galaxy.yml"
           git push
 
+  Release_Draft:
+    needs: Update_galaxy_file
+    runs-on: ubuntu-latest
+    steps:
       - name: Create new release
         uses: release-drafter/release-drafter@v5
         with:
