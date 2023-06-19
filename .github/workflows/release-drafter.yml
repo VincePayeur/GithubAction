@@ -16,16 +16,17 @@ jobs:
 
       - name: Get new release tag name
         if: github.event_name == 'push'
-        id: release_name
+        id: tag_name
         uses: release-drafter/release-drafter@v5
         with:
           disable-releaser: true
           disable-autolabeler: true
 
       - name: Execute pre-release actions
+        if: github.event_name == 'push'
         uses: pre-release-actions.yml
         env:
-          release_name: ${{ steps.release_name.outputs.name }}
+          release_name: ${{ steps.tag_name.outputs.name }}
 
       - name: Create new release
         if: github.event_name == 'push'
