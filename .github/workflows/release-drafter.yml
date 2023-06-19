@@ -1,35 +1,57 @@
 name: Release Drafter
 on: workflow_call
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  Release_Drafter:
+  Release_Drafter_Labeler:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Label pull request
-        if: github.event_name == 'pull_request'
         uses: release-drafter/release-drafter@v5
         with:
           disable-releaser: true
           disable-autolabeler: false
 
+  Get_Draft_Name:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      release_name: ${{ steps.release_name.outputs.name }}
+    steps:
       - name: Get new release tag name
-        if: github.event_name == 'push'
-        id: tag_name
+        id: release_name
         uses: release-drafter/release-drafter@v5
         with:
-          disable-releaser: true
+          disable-releaser: false
           disable-autolabeler: true
 
-      - name: Execute pre-release actions
-        if: github.event_name == 'push'
-        uses: VincePayeur/GithubAction/.github/workflows/pre-release-actions.yml@main
-        env:
-          release_name: ${{ steps.tag_name.outputs.name }}
+  Update_galaxy_file:
+    needs: Get_Draft_Name
+    runs-on: ubuntu-latest
+    env:
+      release_name: ${{ needs.Get_Draft_Name.outputs.release_name }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
+      - name: Update galaxy.yml with the new release version
+        run: |
+          version="$release_name"
+          sed -i 's/[1-9]\?[0-9]\.[1-9]\?[0-9]\.[1-9]\?[0-9]/'"${version:1}"'/' galaxy.yml
+
+      - name: Commit and push changes to galaxy.yml
+        run: |
+          git config --global user.name "Github action BOT"
+          git commit -am "Automated commit to update galaxy.yml"
+          git push
+
+  Release_Draft:
+    needs: Update_galaxy_file
+    runs-on: ubuntu-latest
+    steps:
       - name: Create new release
-        if: github.event_name == 'push'
         uses: release-drafter/release-drafter@v5
         with:
           publish: true
