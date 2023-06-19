@@ -21,7 +21,7 @@ jobs:
           disable-autolabeler: false
 
   Release_Draft:
-    if: '!${{ github.event.inputs.is_collection }}'
+    if: github.event_name == 'push' && !${{ github.event.inputs.is_collection }}
     runs-on: ubuntu-latest
     steps:
       - name: Create new release
@@ -32,7 +32,7 @@ jobs:
           disable-autolabeler: true
 
   Release_Draft_Collection:
-    if: ${{ github.event.inputs.is_collection }}
+    if: github.event_name == 'push' && ${{ github.event.inputs.is_collection }}
     runs-on: ubuntu-latest
     steps:
       - name: Get new release tag name
