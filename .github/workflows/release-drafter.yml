@@ -24,7 +24,7 @@ jobs:
 
       - name: Execute pre-release actions
         if: github.event_name == 'push'
-        uses: pre-release-actions.yml
+        uses: VincePayeur/GithubAction/.github/workflows/pre-release-actions.yml
         env:
           release_name: ${{ steps.tag_name.outputs.name }}
 
