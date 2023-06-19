@@ -17,5 +17,5 @@ jobs:
       - name: Print tag name
         run: |
           echo "--- Start ---"
-          echo "${{ steps.tag_name.outputs.name }}"
+          echo "${{ steps.tag_name.outputs.tag_name }}"
           echo "--- End ---"
