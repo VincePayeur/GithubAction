@@ -4,8 +4,8 @@ Pour appeler ce workflow réutilisable, vous n'avez qu'à appeler le répertoire
 
 	on:
 	 push:
-		branches:
-		- main
+	  branches:
+	  - main
 	 pull_request:
 	  types: [opened, reopened, synchronize]
 
