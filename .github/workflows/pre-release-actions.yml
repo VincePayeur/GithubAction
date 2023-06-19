@@ -1,4 +1,4 @@
-name: Post release actions
+name: Pre release actions
 on: workflow_call
 
 jobs:
