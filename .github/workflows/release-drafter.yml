@@ -21,7 +21,7 @@ jobs:
           disable-autolabeler: false
 
   Release_Draft:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && true
     runs-on: ubuntu-latest
     steps:
       - name: Create new release
